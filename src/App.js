@@ -1,58 +1,64 @@
-import React, { Component } from 'react';
-import './App.css';
+import React, { Component } from "react";
+import { Button } from "antd";
+import "./App.css";
 
-import ndarray from 'ndarray';
-import ops from 'ndarray-ops';
+import ndarray from "ndarray";
+import ops from "ndarray-ops";
 
-import { food101topK } from './utils';
+import { food101topK } from "./utils";
 
 const loadImage = window.loadImage;
 
-const mapProb = (prob) => {
+const mapProb = prob => {
   if (prob * 100 < 2) {
-    return '2%';
+    return "2%";
   } else {
-    return (prob * 100 + '%');
+    return prob * 100 + "%";
   }
-}
+};
 
-const Predictions = ({topK}) => {
+const Predictions = ({ topK }) => {
   return (
-    <table className='predictions'>
+    <table className="predictions">
       <tbody>
-      <tr>
-        <th className='th'>Prediction</th>
-        <th>Probability</th>
-      </tr>
-      { topK.map((pred, i) =>
-        <tr key={i}>
-          <td className='predLabel'>{pred.name}</td>
-          <td className='predPercent'>
-            <span className='predPercentLabel'>{(pred.probability*100).toFixed(5)}%</span>
-            <div className='predBar' style={{width: mapProb(pred.probability)}}/>
-          </td>
+        <tr>
+          <th className="th">Prediction</th>
+          <th>Probability</th>
         </tr>
-      )}
+        {topK.map((pred, i) => (
+          <tr key={i}>
+            <td className="predLabel">{pred.name}</td>
+            <td className="predPercent">
+              <span className="predPercentLabel">
+                {(pred.probability * 100).toFixed(5)}%
+              </span>
+              <div
+                className="predBar"
+                style={{ width: mapProb(pred.probability) }}
+              />
+            </td>
+          </tr>
+        ))}
       </tbody>
     </table>
   );
-}
+};
 
 class App extends Component {
-
   constructor() {
     super();
 
     let hasWebgl = false;
-    const canvas = document.createElement('canvas');
-    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+    const canvas = document.createElement("canvas");
+    const gl =
+      canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
     // Report the result.
     if (gl && gl instanceof WebGLRenderingContext) {
       hasWebgl = true;
     } else {
       hasWebgl = false;
     }
-    console.log('WebGL enabled:', hasWebgl);
+    console.log("WebGL enabled:", hasWebgl);
 
     this.urlInput = null;
     this.state = {
@@ -65,17 +71,17 @@ class App extends Component {
       classifyPercent: 0,
       topK: null,
       hasWebgl,
-      url: 'https://i.loli.net/2019/06/09/5cfc75b68f7a687369.png'
+      url: "https://i.loli.net/2019/06/09/5cfc75b68f7a687369.png"
     };
   }
 
   loadModel = () => {
-    console.log('Loading Model');
+    console.log("Loading Model");
     const model = new window.KerasJS.Model({
       filepaths: {
-        model: 'model.json' ,
-        weights: 'model4b.10-0.68_weights.buf',
-        metadata: 'model4b.10-0.68_metadata.json'
+        model: "model.json",
+        weights: "model4b.10-0.68_weights.buf",
+        metadata: "model4b.10-0.68_metadata.json"
       },
       gpu: this.state.hasWebgl,
       layerCallPauses: true
@@ -83,7 +89,7 @@ class App extends Component {
 
     let interval = setInterval(() => {
       const percent = model.getLoadingProgress();
-      console.log('Progress', percent, model.xhrProgress);
+      console.log("Progress", percent, model.xhrProgress);
       this.setState({
         loadingPercent: percent
       });
@@ -91,33 +97,34 @@ class App extends Component {
 
     const waitTillReady = model.ready();
 
-    waitTillReady.then(() => {
-      clearInterval(interval);
-      console.log('Model ready');
-      this.setState({
-        loadingPercent: 100,
-        modelLoading: false,
-        modelLoaded: true
-      });
+    waitTillReady
+      .then(() => {
+        clearInterval(interval);
+        console.log("Model ready");
+        this.setState({
+          loadingPercent: 100,
+          modelLoading: false,
+          modelLoaded: true
+        });
 
-      setTimeout(() => this.loadImageToCanvas(this.state.url), 100);
-    })
-    .catch(err => {
-      clearInterval(interval);
-      console.log('err', err);
-    });
+        setTimeout(() => this.loadImageToCanvas(this.state.url), 100);
+      })
+      .catch(err => {
+        clearInterval(interval);
+        console.log("err", err);
+      });
 
     this.setState({
       modelLoading: true,
       model
     });
-  }
+  };
 
-  loadImageToCanvas = (url) => {
-    console.log('Loading Image');
+  loadImageToCanvas = url => {
+    console.log("Loading Image");
     if (!url) {
       return;
-    };
+    }
 
     this.setState({
       imageLoadingError: false,
@@ -127,20 +134,20 @@ class App extends Component {
       topK: null
     });
 
-    loadImage(url,
+    loadImage(
+      url,
       img => {
-        if (img.type === 'error') {
-          console.log('Error loading image');
+        if (img.type === "error") {
+          console.log("Error loading image");
           this.setState({
             imageLoadingError: true,
             imageLoading: false,
             modelRunning: false,
             url: null
           });
-
         } else {
-          console.log('Image Loaded');
-          const ctx = document.getElementById('input-canvas').getContext('2d');
+          console.log("Image Loaded");
+          const ctx = document.getElementById("input-canvas").getContext("2d");
           ctx.drawImage(img, 0, 0);
           this.setState({
             imageLoadingError: false,
@@ -149,7 +156,7 @@ class App extends Component {
           });
           setTimeout(() => {
             this.runModel();
-          }, 1000)
+          }, 1000);
         }
       },
       {
@@ -158,15 +165,15 @@ class App extends Component {
         cover: true,
         crop: true,
         canvas: true,
-        crossOrigin: 'Anonymous'
+        crossOrigin: "Anonymous"
       }
     );
-  }
+  };
 
   runModel = () => {
-    console.log('Running Model');
+    console.log("Running Model");
 
-    const ctx = document.getElementById('input-canvas').getContext('2d');
+    const ctx = document.getElementById("input-canvas").getContext("2d");
     const imageData = ctx.getImageData(
       0,
       0,
@@ -178,7 +185,7 @@ class App extends Component {
     // data processing
     // see https://github.com/fchollet/keras/blob/master/keras/applications/imagenet_utils.py
     // and https://github.com/fchollet/keras/blob/master/keras/applications/inception_v3.py
-    let dataTensor = ndarray(new Float32Array(data), [ width, height, 4 ]);
+    let dataTensor = ndarray(new Float32Array(data), [width, height, 4]);
     let dataProcessedTensor = ndarray(new Float32Array(width * height * 3), [
       width,
       height,
@@ -203,7 +210,7 @@ class App extends Component {
     const inputData = { input_1: dataProcessedTensor.data };
     const predPromise = this.state.model.predict(inputData);
 
-    const totalLayers = Object.keys(this.state.model.modelDAG).length
+    const totalLayers = Object.keys(this.state.model.modelDAG).length;
     let interval = setInterval(() => {
       const completedLayers = this.state.model.layersWithResults.length;
       this.setState({
@@ -214,7 +221,7 @@ class App extends Component {
     predPromise.then(outputData => {
       console.log(outputData);
       clearInterval(interval);
-      const preds = outputData['dense_1'];
+      const preds = outputData["dense_1"];
       const topK = food101topK(preds);
       console.log(topK);
       this.setState({
@@ -222,16 +229,16 @@ class App extends Component {
         modelRunning: false
       });
     });
-  }
+  };
 
   classifyNewImage = () => {
     const newUrl = this.urlInput.value;
     this.setState({
       url: this.urlInput.value
     });
-    console.log('classifying new image', newUrl);
+    console.log("classifying new image", newUrl);
     this.loadImageToCanvas(newUrl);
-  }
+  };
 
   render() {
     const {
@@ -247,36 +254,68 @@ class App extends Component {
     return (
       <div className="App">
         <h1>Qathena Visual Recommendation Demo</h1>
-        { !modelLoaded ?
-        <p className='intro'>
-          The file may be fairly large for some (85 MB), so keep that in mind if progress seems stuck.
-        </p>
-        : ''}
-        <div className='init'>
-        { !modelLoaded && !modelLoading ? <button onClick={this.loadModel}>Click to Load Model (85 MB)</button> : ''}
-        { !modelLoaded && modelLoading ?
-          <p className='loading'>LOADING MODEL: {loadingPercent}%</p>
-          : ''}
-        { modelLoaded && imageLoading ?
-          <p className='loading'>LOADING IMAGE</p>
-          : ''}
-        { modelLoaded && imageLoadingError ?
-          <p className='error'>ERROR LOADING IMAGE.<br/>TRY DIFFERENT URL</p>
-          : ''}
-        { modelLoaded && modelRunning ?
-          <p className='loading'>CLASSIFYING: {classifyPercent}%</p>
-          : ''}
-        </div>
-        <div className='interactive'>
-          { modelLoaded && !modelRunning && !imageLoading ?
-          <p>
-            Food Image URL: <input type='text' ref={(input) => { this.urlInput = input; }}/>
-            <br/><br/>
-            <button onClick={this.classifyNewImage}>Click to Classify Image</button>
+        {!modelLoaded ? (
+          <p className="intro">
+            The file may be fairly large for some (85 MB), so keep that in mind
+            if progress seems stuck.
           </p>
-          : '' }
-          <canvas id='input-canvas' width='299' height='299'/>
-          { topK ? <Predictions topK={topK}/> : ''}
+        ) : (
+          ""
+        )}
+        <div className="init">
+          {!modelLoaded && !modelLoading ? (
+            <Button onClick={this.loadModel}>
+              Click to Load Model (85 MB)
+            </Button>
+          ) : (
+            ""
+          )}
+          {!modelLoaded && modelLoading ? (
+            <p className="loading">LOADING MODEL: {loadingPercent}%</p>
+          ) : (
+            ""
+          )}
+          {modelLoaded && imageLoading ? (
+            <p className="loading">LOADING IMAGE</p>
+          ) : (
+            ""
+          )}
+          {modelLoaded && imageLoadingError ? (
+            <p className="error">
+              ERROR LOADING IMAGE.
+              <br />
+              TRY DIFFERENT URL
+            </p>
+          ) : (
+            ""
+          )}
+          {modelLoaded && modelRunning ? (
+            <p className="loading">CLASSIFYING: {classifyPercent}%</p>
+          ) : (
+            ""
+          )}
+        </div>
+        <div className="interactive">
+          {modelLoaded && !modelRunning && !imageLoading ? (
+            <p>
+              Food Image URL:{" "}
+              <input
+                type="text"
+                ref={input => {
+                  this.urlInput = input;
+                }}
+              />
+              <br />
+              <br />
+              <Button type="primary" onClick={this.classifyNewImage}>
+                Click to Classify Image
+              </Button>
+            </p>
+          ) : (
+            ""
+          )}
+          <canvas id="input-canvas" width="299" height="299" />
+          {topK ? <Predictions topK={topK} /> : ""}
         </div>
       </div>
     );
