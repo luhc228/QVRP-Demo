@@ -65,7 +65,7 @@ class App extends Component {
       classifyPercent: 0,
       topK: null,
       hasWebgl,
-      url: 'http://www.rawtillwhenever.com/wp-content/uploads/2015/09/vegan-tempura-sushi-2.png'
+      url: 'https://i.loli.net/2019/06/09/5cfc75b68f7a687369.png'
     };
   }
 
@@ -74,7 +74,7 @@ class App extends Component {
     const model = new window.KerasJS.Model({
       filepaths: {
         model: 'model.json' ,
-        weights: 'https://s3.amazonaws.com/stratospark/food-101/model4b.10-0.68_weights.buf',
+        weights: 'model4b.10-0.68_weights.buf',
         metadata: 'model4b.10-0.68_metadata.json'
       },
       gpu: this.state.hasWebgl,
@@ -127,8 +127,7 @@ class App extends Component {
       topK: null
     });
 
-    loadImage(
-      'https://crossorigin.me/' + url,
+    loadImage(url,
       img => {
         if (img.type === 'error') {
           console.log('Error loading image');
@@ -247,16 +246,14 @@ class App extends Component {
     } = this.state;
     return (
       <div className="App">
-        <h1>Food Classification Demo with Keras.js!</h1>
+        <h1>Qathena Visual Recommendation Demo</h1>
         { !modelLoaded ?
         <p className='intro'>
-          To get started, click the Load Model button to download the model that
-          we have built and exported using the Python notebook. The file may be
-          fairly large for some (85 MB), so keep that in mind if progress seems stuck.
+          The file may be fairly large for some (85 MB), so keep that in mind if progress seems stuck.
         </p>
         : ''}
         <div className='init'>
-        { !modelLoaded && !modelLoading ? <button onClick={this.loadModel}>Load Model (85 MB)</button> : ''}
+        { !modelLoaded && !modelLoading ? <button onClick={this.loadModel}>Click to Load Model (85 MB)</button> : ''}
         { !modelLoaded && modelLoading ?
           <p className='loading'>LOADING MODEL: {loadingPercent}%</p>
           : ''}
@@ -275,7 +272,7 @@ class App extends Component {
           <p>
             Food Image URL: <input type='text' ref={(input) => { this.urlInput = input; }}/>
             <br/><br/>
-            <button onClick={this.classifyNewImage}>Classify Image</button>
+            <button onClick={this.classifyNewImage}>Click to Classify Image</button>
           </p>
           : '' }
           <canvas id='input-canvas' width='299' height='299'/>
