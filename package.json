@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "http://stratospark.com/demos/food-101",
   "devDependencies": {
+    "babel-plugin-import": "^1.12.0",
     "react-scripts": "0.8.5"
   },
   "dependencies": {
