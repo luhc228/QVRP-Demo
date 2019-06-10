@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { Button } from "antd";
+import Button from 'antd/lib/button';
+import Rate from 'antd/lib/rate';
 import "./App.css";
 
 import ndarray from "ndarray";
@@ -264,12 +265,11 @@ class App extends Component {
         )}
         <div className="init">
           {!modelLoaded && !modelLoading ? (
-            <Button onClick={this.loadModel}>
+            <Button type="secondary" onClick={this.loadModel}>
               Click to Load Model (85 MB)
             </Button>
-          ) : (
-            ""
-          )}
+          ) : null}
+          <Rate />
           {!modelLoaded && modelLoading ? (
             <p className="loading">LOADING MODEL: {loadingPercent}%</p>
           ) : (
