@@ -59,7 +59,6 @@ class App extends Component {
     } else {
       hasWebgl = false;
     }
-    console.log("WebGL enabled:", hasWebgl);
 
     this.state = {
       urlInput: "",
@@ -77,7 +76,6 @@ class App extends Component {
   }
 
   loadModel = () => {
-    console.log("Loading Model");
     const model = new window.KerasJS.Model({
       filepaths: {
         model: "model.json",
@@ -90,7 +88,6 @@ class App extends Component {
 
     let interval = setInterval(() => {
       const percent = model.getLoadingProgress();
-      console.log("Progress", percent, model.xhrProgress);
       this.setState({
         loadingPercent: percent
       });
@@ -101,7 +98,6 @@ class App extends Component {
     waitTillReady
       .then(() => {
         clearInterval(interval);
-        console.log("Model ready");
         this.setState({
           loadingPercent: 100,
           modelLoading: false,
@@ -112,7 +108,6 @@ class App extends Component {
       })
       .catch(err => {
         clearInterval(interval);
-        console.log("err", err);
       });
 
     this.setState({
@@ -122,7 +117,6 @@ class App extends Component {
   };
 
   loadImageToCanvas = url => {
-    console.log("Loading Image");
     if (!url) {
       return;
     }
@@ -139,7 +133,6 @@ class App extends Component {
       url,
       img => {
         if (img.type === "error") {
-          console.log("Error loading image");
           this.setState({
             imageLoadingError: true,
             imageLoading: false,
@@ -147,7 +140,6 @@ class App extends Component {
             url: null
           });
         } else {
-          console.log("Image Loaded");
           const ctx = document.getElementById("input-canvas").getContext("2d");
           ctx.drawImage(img, 0, 0);
           this.setState({
@@ -172,8 +164,6 @@ class App extends Component {
   };
 
   runModel = () => {
-    console.log("Running Model");
-
     const ctx = document.getElementById("input-canvas").getContext("2d");
     const imageData = ctx.getImageData(
       0,
@@ -217,11 +207,9 @@ class App extends Component {
     }, 50);
 
     predPromise.then(outputData => {
-      console.log(outputData);
       clearInterval(interval);
       const preds = outputData["dense_1"];
       const topK = food101topK(preds);
-      console.log(topK);
       this.setState({
         topK,
         modelRunning: false
