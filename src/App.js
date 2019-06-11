@@ -18,37 +18,9 @@ const mapProb = prob => {
   }
 };
 
-const Predictions = ({ topK }) => {
-  return (
-    <table className="predictions">
-      <tbody>
-        <tr>
-          <th className="th">Prediction</th>
-          <th>Probability</th>
-        </tr>
-        {topK.map((pred, i) => (
-          <tr key={i}>
-            <td className="predLabel">{pred.name}</td>
-            <td className="predPercent">
-              <span className="predPercentLabel">
-                {(pred.probability * 100).toFixed(5)}%
-              </span>
-              <div
-                className="predBar"
-                style={{ width: mapProb(pred.probability) }}
-              />
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  );
-};
-
 class App extends Component {
   constructor() {
     super();
-
     let hasWebgl = false;
     const canvas = document.createElement("canvas");
     const gl =
@@ -74,6 +46,27 @@ class App extends Component {
       url: "https://i.loli.net/2019/06/09/5cfc75b68f7a687369.png"
     };
   }
+
+  columns = [
+    {
+      title: "Prediction",
+      dataIndex: "name",
+      key: "name"
+    },
+    {
+      title: "probability",
+      dataIndex: "probability",
+      key: "probability",
+      render: (text, _, index) => {
+        text = (text * 100).toFixed(5);
+        return index === 0 ? (
+          <div style={{ color: "red", fontWeight: "bold" }}>{text}%</div>
+        ) : (
+          <div>{text}%</div>
+        );
+      }
+    }
+  ];
 
   loadModel = () => {
     const model = new window.KerasJS.Model({
@@ -248,10 +241,9 @@ class App extends Component {
           ) : null}
           {!modelLoaded && modelLoading ? (
             <p className="loading">
-              {/* Loading Model: {loadingPercent}%{" "} */}
               Loading Model...
               <br />
-              <Progress className="progress-loading" percent={loadingPercent} />
+              <Progress className="progress-loading" percent={+loadingPercent} />
             </p>
           ) : (
             ""
@@ -276,7 +268,7 @@ class App extends Component {
               <br />
               <Progress
                 className="progress-loading"
-                percent={classifyPercent}
+                percent={+classifyPercent}
               />
             </p>
           ) : (
@@ -285,18 +277,29 @@ class App extends Component {
         </div>
         <div className="interactive">
           {modelLoaded && !modelRunning && !imageLoading ? (
-              <Input.Search
-                className="input"
-                placeholder="please enter a food image url"
-                enterButton="click to classify"
-                onSearch={value => this.loadImageToCanvas(value)}
-              />
+            <Input.Search
+              className="input"
+              placeholder="please enter a food image url"
+              enterButton="click to classify"
+              onSearch={value => this.loadImageToCanvas(value)}
+            />
           ) : (
             ""
           )}
-          <br/>
-          <canvas id="input-canvas" width="299" height="299" />
-          {topK ? <Predictions topK={topK} /> : ""}
+          <div className="content">
+            <canvas id="input-canvas" width="299" height="299" />
+            {topK ? (
+              <Table
+                rowKey={record => record.name}
+                dataSource={topK}
+                columns={this.columns}
+                pagination={false}
+                bordered
+              />
+            ) : (
+              ""
+            )}
+          </div>
         </div>
       </div>
     );
