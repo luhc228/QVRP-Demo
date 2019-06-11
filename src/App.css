@@ -83,3 +83,11 @@ canvas {
 .interactive {
   margin-top: 1em;
 }
+
+.content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding: 3% 0;
+}
