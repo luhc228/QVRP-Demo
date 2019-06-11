@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import Button from 'antd/lib/button';
-import Rate from 'antd/lib/rate';
+import Button from "antd/lib/button";
+import { Progress, Divider, Input, Table } from "antd";
 import "./App.css";
 
 import ndarray from "ndarray";
@@ -61,8 +61,8 @@ class App extends Component {
     }
     console.log("WebGL enabled:", hasWebgl);
 
-    this.urlInput = null;
     this.state = {
+      urlInput: "",
       model: null,
       modelLoaded: false,
       modelLoading: false,
@@ -181,11 +181,8 @@ class App extends Component {
       ctx.canvas.width,
       ctx.canvas.height
     );
-    const { data, width, height } = imageData;
 
-    // data processing
-    // see https://github.com/fchollet/keras/blob/master/keras/applications/imagenet_utils.py
-    // and https://github.com/fchollet/keras/blob/master/keras/applications/inception_v3.py
+    const { data, width, height } = imageData;
     let dataTensor = ndarray(new Float32Array(data), [width, height, 4]);
     let dataProcessedTensor = ndarray(new Float32Array(width * height * 3), [
       width,
@@ -232,15 +229,6 @@ class App extends Component {
     });
   };
 
-  classifyNewImage = () => {
-    const newUrl = this.urlInput.value;
-    this.setState({
-      url: this.urlInput.value
-    });
-    console.log("classifying new image", newUrl);
-    this.loadImageToCanvas(newUrl);
-  };
-
   render() {
     const {
       loadingPercent,
@@ -254,66 +242,71 @@ class App extends Component {
     } = this.state;
     return (
       <div className="App">
-        <h1>Qathena Visual Recommendation Demo</h1>
-        {!modelLoaded ? (
-          <p className="intro">
-            The file may be fairly large for some (85 MB), so keep that in mind
-            if progress seems stuck.
-          </p>
-        ) : (
-          ""
-        )}
+        <img
+          className="qathena-logo"
+          src="https://i.loli.net/2019/06/11/5cff2120d0b1230348.jpeg"
+        />
+        <h1 className="header">Qathena Visual Recommendation Demo</h1>
+        <p className="intro">
+          Note: The file may be fairly large for some (85 MB), so keep that in
+          mind if progress seems stuck while loading model.
+        </p>
+        <Divider />
         <div className="init">
           {!modelLoaded && !modelLoading ? (
             <Button type="secondary" onClick={this.loadModel}>
               Click to Load Model (85 MB)
             </Button>
           ) : null}
-          <Rate />
           {!modelLoaded && modelLoading ? (
-            <p className="loading">LOADING MODEL: {loadingPercent}%</p>
+            <p className="loading">
+              {/* Loading Model: {loadingPercent}%{" "} */}
+              Loading Model...
+              <br />
+              <Progress className="progress-loading" percent={loadingPercent} />
+            </p>
           ) : (
             ""
           )}
           {modelLoaded && imageLoading ? (
-            <p className="loading">LOADING IMAGE</p>
+            <p className="loading">Image Loading...</p>
           ) : (
             ""
           )}
           {modelLoaded && imageLoadingError ? (
             <p className="error">
-              ERROR LOADING IMAGE.
+              Error Loading Image.
               <br />
-              TRY DIFFERENT URL
+              Try Different Url
             </p>
           ) : (
             ""
           )}
           {modelLoaded && modelRunning ? (
-            <p className="loading">CLASSIFYING: {classifyPercent}%</p>
+            <p className="loading">
+              Classifying...
+              <br />
+              <Progress
+                className="progress-loading"
+                percent={classifyPercent}
+              />
+            </p>
           ) : (
             ""
           )}
         </div>
         <div className="interactive">
           {modelLoaded && !modelRunning && !imageLoading ? (
-            <p>
-              Food Image URL:{" "}
-              <input
-                type="text"
-                ref={input => {
-                  this.urlInput = input;
-                }}
+              <Input.Search
+                className="input"
+                placeholder="please enter a food image url"
+                enterButton="click to classify"
+                onSearch={value => this.loadImageToCanvas(value)}
               />
-              <br />
-              <br />
-              <Button type="primary" onClick={this.classifyNewImage}>
-                Click to Classify Image
-              </Button>
-            </p>
           ) : (
             ""
           )}
+          <br/>
           <canvas id="input-canvas" width="299" height="299" />
           {topK ? <Predictions topK={topK} /> : ""}
         </div>
