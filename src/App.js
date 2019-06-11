@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Button from "antd/lib/button";
 import { Progress, Divider, Input, Table } from "antd";
+import axios from 'axios';
 import "./App.css";
 
 import ndarray from "ndarray";
@@ -71,6 +72,7 @@ class App extends Component {
       classifyPercent: 0,
       topK: null,
       hasWebgl,
+      textJudgedJson: null,
       url: "https://i.loli.net/2019/06/09/5cfc75b68f7a687369.png"
     };
   }
@@ -113,6 +115,22 @@ class App extends Component {
     this.setState({
       modelLoading: true,
       model
+    });
+  };
+
+  loadTextToJudge = text => {
+    let proxyUrl = 'https://floating-coast-82587.herokuapp.com/',
+    targetUrl = 'http://text-processing.com/api/sentiment/'
+
+    axios.post(proxyUrl + targetUrl, {
+      text: text,
+      language: 'english'
+    })
+    .then(function (response) {
+      console.log(response);
+    })
+    .catch(function (error) {
+      console.log(error);
     });
   };
 
@@ -237,7 +255,9 @@ class App extends Component {
         <h1 className="header">Qathena Visual Recommendation Demo</h1>
         <p className="intro">
           Note: The file may be fairly large for some (85 MB), so keep that in
-          mind if progress seems stuck while loading model.
+          mind if progress seems stuck while loading model. We have a default
+          image for visual classifying after model loaded, it's a sushi, enjoy
+          yourself after that.
         </p>
         <Divider />
         <div className="init">
@@ -248,7 +268,6 @@ class App extends Component {
           ) : null}
           {!modelLoaded && modelLoading ? (
             <p className="loading">
-              {/* Loading Model: {loadingPercent}%{" "} */}
               Loading Model...
               <br />
               <Progress className="progress-loading" percent={loadingPercent} />
@@ -285,19 +304,25 @@ class App extends Component {
         </div>
         <div className="interactive">
           {modelLoaded && !modelRunning && !imageLoading ? (
-              <Input.Search
-                className="input"
-                placeholder="please enter a food image url"
-                enterButton="click to classify"
-                onSearch={value => this.loadImageToCanvas(value)}
-              />
+            <Input.Search
+              className="input"
+              placeholder="please enter a food image url"
+              enterButton="click to classify"
+              onSearch={value => this.loadImageToCanvas(value)}
+            />
           ) : (
             ""
           )}
-          <br/>
+          <br />
           <canvas id="input-canvas" width="299" height="299" />
           {topK ? <Predictions topK={topK} /> : ""}
         </div>
+        <Input.Search
+          className="input"
+          placeholder="please enter description for the food"
+          enterButton="click to judge"
+          onSearch={value => this.loadTextToJudge(value)}
+        />
       </div>
     );
   }
