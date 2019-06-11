@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Button from "antd/lib/button";
 import { Progress, Divider, Input, Table } from "antd";
 import axios from 'axios';
+import qs from 'qs';
 import "./App.css";
 
 import ndarray from "ndarray";
@@ -112,13 +113,13 @@ class App extends Component {
   };
 
   loadTextToJudge = text => {
-    let proxyUrl = 'https://floating-coast-82587.herokuapp.com/',
+    let proxyUrl = 'https://cors-anywhere.herokuapp.com/',
     targetUrl = 'http://text-processing.com/api/sentiment/'
 
-    axios.post(proxyUrl + targetUrl, {
+    axios.post(proxyUrl + targetUrl, qs.stringify({
       text: text,
       language: 'english'
-    })
+    }))
     .then(function (response) {
       console.log(response);
     })
