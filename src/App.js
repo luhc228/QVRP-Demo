@@ -382,6 +382,10 @@ class App extends Component {
                     className="progress-loading"
                     percent={+classifyPercent}
                   />
+                  <p style={{ marginTop: "5px" }}>
+                    If the progress bar is stuck, the model is not loaded
+                    successfully. Please refresh the page and reload.
+                  </p>
                 </p>
               ) : (
                 ""
