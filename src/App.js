@@ -7,8 +7,7 @@ import {
   Table,
   Row,
   Col,
-  Tooltip,
-  Message
+  Tooltip
 } from "antd";
 import { Alert } from "antd";
 import axios from "axios";
