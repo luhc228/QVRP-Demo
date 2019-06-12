@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import Button from "antd/lib/button";
-import { Progress, Divider, Input, Table } from "antd";
-import axios from 'axios';
-import qs from 'qs';
+import { Progress, Divider, Input, Table, Row, Col, Tooltip } from "antd";
+import { Alert } from "antd";
+import axios from "axios";
+import qs from "qs";
 import "./App.css";
 
 import ndarray from "ndarray";
@@ -11,6 +12,7 @@ import ops from "ndarray-ops";
 import { food101topK } from "./utils";
 
 const loadImage = window.loadImage;
+const { TextArea } = Input;
 
 const mapProb = prob => {
   if (prob * 100 < 2) {
@@ -45,7 +47,7 @@ class App extends Component {
       classifyPercent: 0,
       topK: null,
       hasWebgl,
-      textJudgedJson: null,
+      textForJudge: "",
       url: "https://i.loli.net/2019/06/09/5cfc75b68f7a687369.png"
     };
   }
@@ -113,19 +115,25 @@ class App extends Component {
   };
 
   loadTextToJudge = text => {
-    let proxyUrl = 'https://cors-anywhere.herokuapp.com/',
-    targetUrl = 'http://text-processing.com/api/sentiment/'
+    console.log(text);
 
-    axios.post(proxyUrl + targetUrl, qs.stringify({
-      text: text,
-      language: 'english'
-    }))
-    .then(function (response) {
-      console.log(response);
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
+    let proxyUrl = "https://cors-anywhere.herokuapp.com/",
+      targetUrl = "http://text-processing.com/api/sentiment/";
+
+    axios
+      .post(
+        proxyUrl + targetUrl,
+        qs.stringify({
+          text: text,
+          language: "english"
+        })
+      )
+      .then(function(response) {
+        console.log(response);
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
   };
 
   loadImageToCanvas = url => {
@@ -242,92 +250,148 @@ class App extends Component {
     } = this.state;
     return (
       <div className="App">
-        <img
-          className="qathena-logo"
-          src="https://i.loli.net/2019/06/11/5cff2120d0b1230348.jpeg"
-        />
-        <h1 className="header">Qathena Visual Recommendation Demo</h1>
-        <p className="intro">
-          Note: The file may be fairly large for some (85 MB), so keep that in
-          mind if progress seems stuck while loading model. We have a default
-          image for visual classifying after model loaded, it's a sushi, enjoy
-          yourself after that.
-        </p>
-        <Divider />
-        <div className="init">
-          {!modelLoaded && !modelLoading ? (
-            <Button type="secondary" onClick={this.loadModel}>
-              Click to Load Model (85 MB)
-            </Button>
-          ) : null}
-          {!modelLoaded && modelLoading ? (
-            <p className="loading">
-              Loading Model...
-              <br />
-              <Progress className="progress-loading" percent={+loadingPercent} />
-            </p>
-          ) : (
-            ""
-          )}
-          {modelLoaded && imageLoading ? (
-            <p className="loading">Image Loading...</p>
-          ) : (
-            ""
-          )}
-          {modelLoaded && imageLoadingError ? (
-            <p className="error">
-              Error Loading Image.
-              <br />
-              Try Different Url
-            </p>
-          ) : (
-            ""
-          )}
-          {modelLoaded && modelRunning ? (
-            <p className="loading">
-              Classifying...
-              <br />
-              <Progress
-                className="progress-loading"
-                percent={+classifyPercent}
-              />
-            </p>
-          ) : (
-            ""
-          )}
-        </div>
-        <div className="interactive">
-          {modelLoaded && !modelRunning && !imageLoading ? (
-            <Input.Search
-              className="input"
-              placeholder="please enter a food image url"
-              enterButton="click to classify"
-              onSearch={value => this.loadImageToCanvas(value)}
+        <Row type="flex" align="start" justify="start">
+          <Col span={21} push={3}>
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <h1 className="header">Qathena Visual Recommendation Demo</h1>
+              <p className="intro">
+                Imitating the format of social networking posts, input a picture
+                and a paragraph of text, and analyze the content through machine
+                learning technology.
+              </p>
+            </div>
+          </Col>
+          <Col span={3} pull={21}>
+            <img
+              className="qathena-logo"
+              src="https://i.loli.net/2019/06/11/5cff2120d0b1230348.jpeg"
             />
-          ) : (
-            ""
-          )}
-          <div className="content">
-            <canvas id="input-canvas" width="299" height="299" />
-            {topK ? (
-              <Table
-                rowKey={record => record.name}
-                dataSource={topK}
-                columns={this.columns}
-                pagination={false}
-                bordered
+          </Col>
+        </Row>
+        <Divider className="divider" />
+        <Row type="flex" align="start" justify="start" className="row-body">
+          <Col span={13}>
+            <div className="init">
+              <Alert
+                style={{
+                  margin: "0 0 3rem 1.5rem",
+                  textAlign: "left",
+                  width: "50%"
+                }}
+                message="Demo1: Food Image Recognition by Deep Learning"
               />
-            ) : (
-              ""
-            )}
-          </div>
-        </div>
-        <Input.Search
-          className="input"
-          placeholder="please enter description for the food"
-          enterButton="click to judge"
-          onSearch={value => this.loadTextToJudge(value)}
-        />
+              {!modelLoaded && !modelLoading ? (
+                <div>
+                  <Tooltip
+                    placement="right"
+                    title="The model may be fairly large, so keep that in
+                    mind if progress seems stuck while loading model (model size ~85 Mb)."
+                  >
+                    <Button type="secondary" onClick={this.loadModel}>
+                      Click to Load Model
+                    </Button>
+                  </Tooltip>
+                </div>
+              ) : null}
+              {!modelLoaded && modelLoading ? (
+                <p className="loading">
+                  Loading Model...
+                  <br />
+                  <Progress
+                    className="progress-loading"
+                    percent={+loadingPercent}
+                  />
+                </p>
+              ) : (
+                ""
+              )}
+              {modelLoaded && imageLoading ? (
+                <p className="loading">Image Loading...</p>
+              ) : (
+                ""
+              )}
+              {modelLoaded && imageLoadingError ? (
+                <p className="error">
+                  Error Loading Image. Please Try Different Url.
+                </p>
+              ) : (
+                ""
+              )}
+              {modelLoaded && modelRunning ? (
+                <p className="loading">
+                  Classifying...
+                  <br />
+                  <Progress
+                    className="progress-loading"
+                    percent={+classifyPercent}
+                  />
+                </p>
+              ) : (
+                ""
+              )}
+            </div>
+            <div className="interactive">
+              {modelLoaded && !modelRunning && !imageLoading ? (
+                <Input.Search
+                  className="input-url"
+                  placeholder="Please enter a new food image url to classify"
+                  enterButton="click to classify"
+                  onSearch={value => this.loadImageToCanvas(value)}
+                />
+              ) : (
+                ""
+              )}
+              <div className="content">
+                <canvas id="input-canvas" width="299" height="299" />
+                {topK ? (
+                  <Table
+                    rowKey={record => record.name}
+                    dataSource={topK}
+                    columns={this.columns}
+                    pagination={false}
+                    bordered
+                  />
+                ) : (
+                  ""
+                )}
+              </div>
+            </div>
+          </Col>
+          <Col span={1}>
+            <Divider type="vertical" className="divider-vertical" />
+          </Col>
+          <Col span={10}>
+            <Alert
+              style={{ margin: "0 0 2rem 0", textAlign: "left", width: "60%" }}
+              message="Demo2: Descriptive text sentiment analysis"
+            />
+            <p
+              style={{
+                textAlign: "left",
+                marginBottom: "2rem",
+                marginLeft: "20px",
+                width: "90%"
+              }}
+            >
+              Note: According to the emotions contained in the text, we analyze
+              the evaluation of the dishes when the guests eat that.
+            </p>
+            <TextArea
+              style={{ width: "90%" }}
+              placeholder="Please enter a description for the food image (e.g, Wow! the sushi looks delicious!) "
+              autosize={{ minRows: 3, maxRows: 6 }}
+              onChange={e => this.setState({ textForJudge: e.target.value })}
+            />
+
+            <Button
+              type="secondary"
+              style={{ width: "90%", marginTop: "2rem" }}
+              onClick={() => this.loadTextToJudge(this.state.textForJudge)}
+            >
+              Click to Judge
+            </Button>
+          </Col>
+        </Row>
       </div>
     );
   }
