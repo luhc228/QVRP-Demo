@@ -1,14 +1,6 @@
 import React, { Component } from "react";
 import Button from "antd/lib/button";
-import {
-  Progress,
-  Divider,
-  Input,
-  Table,
-  Row,
-  Col,
-  Tooltip
-} from "antd";
+import { Progress, Divider, Input, Table, Row, Col, Tooltip } from "antd";
 import { Alert } from "antd";
 import axios from "axios";
 import qs from "qs";
@@ -363,6 +355,9 @@ class App extends Component {
                     className="progress-loading"
                     percent={+loadingPercent}
                   />
+                  <p style={{ marginTop: "5px" }}>
+                    It may take about 10mins to load, please be patient.
+                  </p>
                 </p>
               ) : (
                 ""
