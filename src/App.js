@@ -1,6 +1,15 @@
 import React, { Component } from "react";
 import Button from "antd/lib/button";
-import { Progress, Divider, Input, Table, Row, Col, Tooltip } from "antd";
+import {
+  Progress,
+  Divider,
+  Input,
+  Table,
+  Row,
+  Col,
+  Tooltip,
+  Message
+} from "antd";
 import { Alert } from "antd";
 import axios from "axios";
 import qs from "qs";
@@ -73,6 +82,51 @@ class App extends Component {
     }
   ];
 
+  judgeColumns = [
+    {
+      title: "pos",
+      dataIndex: "pos",
+      key: "pos",
+      render: (text, record, index) => {
+        text = (text * 100).toFixed(5);
+        console.log(record);
+        const { pos, neg, neutral } = record;
+        return pos > neg && pos > neutral ? (
+          <div style={{ color: "red", fontWeight: "bold" }}>{text}%</div>
+        ) : (
+          <div>{text}%</div>
+        );
+      }
+    },
+    {
+      title: "neg",
+      dataIndex: "neg",
+      key: "neg",
+      render: (text, record, index) => {
+        const { pos, neg, neutral } = record;
+        text = (text * 100).toFixed(5);
+        return neg > pos && neg > neutral ? (
+          <div style={{ color: "red", fontWeight: "bold" }}>{text}%</div>
+        ) : (
+          <div>{text}%</div>
+        );
+      }
+    },
+    {
+      title: "neutral",
+      dataIndex: "neutral",
+      key: "neutral",
+      render: (text, record, index) => {
+        const { pos, neg, neutral } = record;
+        text = (text * 100).toFixed(5);
+        return neutral > pos && neutral > neg ? (
+          <div style={{ color: "red", fontWeight: "bold" }}>{text}%</div>
+        ) : (
+          <div>{text}%</div>
+        );
+      }
+    }
+  ];
   loadModel = () => {
     const model = new window.KerasJS.Model({
       filepaths: {
@@ -114,6 +168,11 @@ class App extends Component {
     });
   };
 
+  /**
+   * @description
+   *
+   * @param {text}
+   */
   loadTextToJudge = text => {
     console.log(text);
 
@@ -128,10 +187,14 @@ class App extends Component {
           language: "english"
         })
       )
-      .then(function(response) {
-        console.log(response);
+      .then(response => {
+        console.log(response.data);
+        this.setState({
+          sentimentData: response.data
+        });
+        console.log(this.state.sentimentData);
       })
-      .catch(function(error) {
+      .catch(error => {
         console.log(error);
       });
   };
@@ -351,25 +414,22 @@ class App extends Component {
                     pagination={false}
                     bordered
                   />
-                ) : (
-                  ""
-                )}
+                ) : null}
               </div>
             </div>
           </Col>
           <Col span={1}>
             <Divider type="vertical" className="divider-vertical" />
           </Col>
-          <Col span={10}>
+          <Col span={10} style={{ padding: "0 50px" }}>
             <Alert
-              style={{ margin: "0 0 2rem 0", textAlign: "left", width: "60%" }}
+              style={{ margin: "0 0 2rem 0", textAlign: "left", width: "70%" }}
               message="Demo2: Descriptive text sentiment analysis"
             />
             <p
               style={{
                 textAlign: "left",
                 marginBottom: "2rem",
-                marginLeft: "20px",
                 width: "90%"
               }}
             >
@@ -377,7 +437,7 @@ class App extends Component {
               the evaluation of the dishes when the guests eat that.
             </p>
             <TextArea
-              style={{ width: "90%" }}
+              style={{ width: "100%" }}
               placeholder="Please enter a description for the food image (e.g, Wow! the sushi looks delicious!) "
               autosize={{ minRows: 3, maxRows: 6 }}
               onChange={e => this.setState({ textForJudge: e.target.value })}
@@ -385,11 +445,59 @@ class App extends Component {
 
             <Button
               type="secondary"
-              style={{ width: "90%", marginTop: "2rem" }}
+              style={{ width: "100%", marginTop: "20px" }}
               onClick={() => this.loadTextToJudge(this.state.textForJudge)}
             >
               Click to Judge
             </Button>
+            {this.state.sentimentData ? (
+              <div>
+                <Table
+                  style={{ marginTop: 20 }}
+                  rowKey={record => record.pos}
+                  dataSource={[this.state.sentimentData.probability]}
+                  columns={this.judgeColumns}
+                  pagination={false}
+                  bordered
+                />
+                <div
+                  style={{
+                    marginTop: 20,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center"
+                  }}
+                >
+                  <div style={{ margin: "0 20px 0 0" }}>
+                    The result is {this.state.sentimentData.label}
+                  </div>
+                  {this.state.sentimentData.label === "neg" && (
+                    <img
+                      style={{ width: 30, height: 30 }}
+                      src="https://i.loli.net/2019/06/12/5d00aceccf1b942555.png"
+                      alt="neg.png"
+                      title="neg.png"
+                    />
+                  )}
+                  {this.state.sentimentData.label === "neutral" && (
+                    <img
+                      style={{ width: 30, height: 30 }}
+                      src="https://i.loli.net/2019/06/12/5d00aced39c7285310.png"
+                      alt="neutral.png"
+                      title="neutral.png"
+                    />
+                  )}
+                  {this.state.sentimentData.label === "pos" && (
+                    <img
+                      style={{ width: 30, height: 30 }}
+                      src="https://i.loli.net/2019/06/12/5d00aced3bad530244.png"
+                      alt="pos.png"
+                      title="pos.png"
+                    />
+                  )}
+                </div>
+              </div>
+            ) : null}
           </Col>
         </Row>
       </div>
