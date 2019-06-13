@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import Button from "antd/lib/button";
-import { Progress, Alert, Input, Table, Tooltip } from "antd";
+import { Progress, Alert, Input, Table, Tooltip, Divider } from "antd";
 import "./index.css";
+import "../../utils/text.css";
 
 import ndarray from "ndarray";
 import ops from "ndarray-ops";
@@ -234,6 +235,13 @@ class Demo1 extends Component {
             style={{ margin: "0 0 2rem 0", textAlign: "left", width: "100%" }}
             message="Demo1: Food Image Recognition by Deep Learning"
           />
+          <Divider orientation="left">Control Panel</Divider>
+          <p className="text-small">
+            Please click <strong>Click to Load Model</strong> button to load the
+            food-101 model first for the next operations. We have a default
+            image for testing once your model loaded, it's a sushi, after this,
+            put a random image url for fun!
+          </p>
           {!modelLoaded && !modelLoading ? (
             <div>
               <Tooltip
@@ -241,7 +249,11 @@ class Demo1 extends Component {
                 title="The model may be fairly large, so keep that in
                     mind if progress seems stuck while loading model (model size ~85 Mb)."
               >
-                <Button type="secondary" onClick={this.loadModel}>
+                <Button
+                  type="secondary"
+                  style={{ width: "299px" }}
+                  onClick={this.loadModel}
+                >
                   Click to Load Model
                 </Button>
               </Tooltip>
@@ -302,18 +314,26 @@ class Demo1 extends Component {
           ) : (
             ""
           )}
+          <Divider orientation="left">Loaded Image</Divider>
+          <p className="text-small">The loaded image will be displaied here:</p>
           <div className="content">
             <canvas id="input-canvas" width="299" height="299" />
-            {topK ? (
-              <Table
-                rowKey={record => record.name}
-                dataSource={topK}
-                columns={this.columns}
-                pagination={false}
-                bordered
-              />
-            ) : null}
           </div>
+          <Divider orientation="left">Tested Results</Divider>
+          <p className="text-small">
+            Will display top five results with highest probability, total result
+            accuracy of this model (5 results) is <strong>97.42%</strong>. Here
+            is the results:
+          </p>
+          {topK ? (
+            <Table
+              rowKey={record => record.name}
+              dataSource={topK}
+              columns={this.columns}
+              pagination={false}
+              bordered
+            />
+          ) : null}
         </div>
       </div>
     );

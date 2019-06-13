@@ -137,19 +137,19 @@ export default class Intro extends React.Component {
         <p className="subtitle">3.1 Reference</p>
         <p className="text">
           <a href="https://www.vision.ee.ethz.ch/datasets_extra/food-101/static/bossard_eccv14_food-101.pdf">
-            * Food-101 – Mining Discriminative Components with Random Forests
+            * Food-101 – Mining Discriminative Components with Random Forests.
           </a>
           <br />
           <a href="https://ieeexplore.ieee.org/abstract/document/7460262">
-            * Performance evaluation of hybrid CNN for SIPPER plankton image
+            * Performance evaluation of hybrid CNN for SIPPER plankton image.
             calssification
           </a>
           <a ref="https://arxiv.org/pdf/1612.06543.pdf">
-            * Wide-Slice Residual Networks for Food Recognition
+            * Wide-Slice Residual Networks for Food Recognition.
           </a>
           <br />
           <a ref="https://www.gputechconf.co.kr/assets/files/presentations/2-1650-1710_DL_Contest_%EC%A7%80%EC%A0%95%EC%A3%BC%EC%A0%9C_%EB%8C%80%EC%83%81.pdf">
-            * NVIDIA DEEP LEARNING CONTEST 2016
+            * NVIDIA DEEP LEARNING CONTEST 2016.
           </a>
           <br />
           <a ref="http://dl.acm.org/citation.cfm?id=2986042">

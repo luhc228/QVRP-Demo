@@ -1,13 +1,14 @@
 @import "~antd/dist/antd.css";
 
 canvas {
+  text-align: center;
   display: inline-block;
   border: 1px solid gray;
-  border-radius: 3px;
-  margin: 2em;
 }
 
 .input-url {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
   width: 80%;
 }
 
@@ -46,7 +47,7 @@ canvas {
 
 .error {
   display: inline-block;
-  font-size: 1.5em;
+  font-size: 1em;
   font-weight: bold;
   color: red;
 }
