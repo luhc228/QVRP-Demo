@@ -1,9 +1,10 @@
 import * as React from "react";
 import Button from "antd/lib/button";
-import { Input, Table, Alert } from "antd";
+import { Input, Table, Alert, Divider } from "antd";
 import axios from "axios";
 import qs from "qs";
 import "./index.css";
+import "../../utils/text.css";
 
 const { TextArea } = Input;
 
@@ -11,7 +12,8 @@ export default class Demo2 extends React.Component {
   constructor() {
     super();
     this.state = {
-      textForJudge: ""
+      textForJudge: "",
+      isJudging: false
     };
   }
 
@@ -69,6 +71,8 @@ export default class Demo2 extends React.Component {
     let proxyUrl = "https://cors-anywhere.herokuapp.com/",
       targetUrl = "http://text-processing.com/api/sentiment/";
 
+    this.setState({ isJudging: true });
+
     axios
       .post(
         proxyUrl + targetUrl,
@@ -78,14 +82,14 @@ export default class Demo2 extends React.Component {
         })
       )
       .then(response => {
-        console.log(response.data);
         this.setState({
-          sentimentData: response.data
+          sentimentData: response.data,
+          isJudging: false
         });
-        console.log(this.state.sentimentData);
       })
       .catch(error => {
         console.log(error);
+        this.setState({ isJudging: false });
       });
   };
 
@@ -96,34 +100,50 @@ export default class Demo2 extends React.Component {
           style={{ margin: "0 0 2rem 0", textAlign: "left", width: "100%" }}
           message="Demo2: Descriptive text sentiment analysis"
         />
-        <p
-          style={{
-            textAlign: "left",
-            marginBottom: "2rem",
-            width: "90%"
-          }}
-        >
-          Note: According to the emotions contained in the text, we analyze the
-          evaluation of the dishes when the guests eat that.
+        <Divider orientation="left">Control Panel</Divider>
+        <p className="text-small">
+          According to the emotions contained in the text, we analyze the
+          evaluation of the dishes when the guests eat that. Please type any
+          texts in the area below, and click the
+          <strong> Click to Judge</strong> button to analyse the sentiments.
         </p>
         <TextArea
-          style={{ width: "100%" }}
+          style={{ width: "80%", marginTop: "1rem" }}
           placeholder="Please enter a description for the food image (e.g, Wow! the sushi looks delicious!) "
           autosize={{ minRows: 3, maxRows: 6 }}
           onChange={e => this.setState({ textForJudge: e.target.value })}
         />
 
         <Button
+          loading={this.state.isJudging}
           type="secondary"
-          style={{ width: "100%", marginTop: "20px" }}
-          onClick={() => this.loadTextToJudge(this.state.textForJudge)}
+          style={{ width: "80%", marginTop: "1.5rem", marginBottom: "1.5rem" }}
+          onClick={() => {
+            this.loadTextToJudge(this.state.textForJudge);
+            this.setState({
+              isJudging: true
+            });
+          }}
         >
           Click to Judge
         </Button>
+        <p className="text-small">
+          Please wait a few seconds to see the tested results.
+        </p>
+        <br />
+        <Divider orientation="left">Tested Results</Divider>
+        <p className="text-small">
+          With the LinearSVC from sklearn, we can get a total test accuracy:{" "}
+          <strong>80.1013024602%</strong>, here are the results:
+        </p>
         {this.state.sentimentData ? (
           <div>
             <Table
-              style={{ marginTop: 20 }}
+              style={{
+                marginTop: "1rem",
+                marginLeft: "10%",
+                marginRight: "10%"
+              }}
               rowKey={record => record.pos}
               dataSource={[this.state.sentimentData.probability]}
               columns={this.judgeColumns}
