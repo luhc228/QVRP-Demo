@@ -158,8 +158,8 @@ export default class Demo2 extends React.Component {
                 justifyContent: "center"
               }}
             >
-              <div style={{ margin: "0 20px 0 0" }}>
-                The result is {this.state.sentimentData.label}
+              <div style={{ margin: "10px 20px 0 0" }}>
+                The test result is: {this.state.sentimentData.label}
               </div>
               {this.state.sentimentData.label === "neg" && (
                 <img

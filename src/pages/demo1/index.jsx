@@ -268,7 +268,7 @@ class Demo1 extends Component {
                 percent={+loadingPercent}
               />
               <p style={{ marginTop: "5px" }}>
-                It may take about 10mins to load, please be patient.
+                It may take about 10 minutes to load, please be patient.
               </p>
             </p>
           ) : (
@@ -327,6 +327,11 @@ class Demo1 extends Component {
           </p>
           {topK ? (
             <Table
+              style={{
+                marginLeft: "10%",
+                marginRight: "10%",
+                marginTop: "1rem"
+              }}
               rowKey={record => record.name}
               dataSource={topK}
               columns={this.columns}
