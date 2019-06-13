@@ -9,19 +9,35 @@ export default class System extends React.Component {
         <p className="subtitle">1.1 Build A Better Dataset</p>
         <p className="text">
           The most important task for our system is{" "}
-          <strong>clean and tag the dirty pictures from Instagram</strong>.
-          Because the most important method for improving the accuracy of a DL
-          system is to improve the quality of data. Raw data from instagram is
-          very data dirty, means we can not apply that directly to our training
-          algorithm (will get a bad result).
+          <strong>to clean and tag the dirty pictures from Instagram</strong>.
+          Because the most important method for improving the accuracy of a deep
+          learning model is to improve the quality of it's trainning data. Raw
+          data from instagram is very dirty (because we cannot control the
+          quality and the content of images), means we can not apply that
+          directly to our training algorithm (will get a bad result).
         </p>
         <p className="text">
           So, the first and the most improtant thing is to clean and tag the
-          data from instagram. We can divide our data into two part:
+          data from instagram, for building a data cleaning system, we must use
+          computer to classify the kinds of food and judge the emotions in the
+          image descriptions, that can be very useful for future model
+          trainning:
+        </p>
+        <p className="text">
+          And any posts in social media have both images and descriptions like
+          that:
         </p>
         <p className="text">
           &nbsp; <strong>1. Food Images</strong>
           <br /> &nbsp; <strong>2. Food Descriptions</strong>
+        </p>
+        <p className="text">
+          Actually, we can use our deep learning system to tag those raw dara
+          and improve their quality. We can use food-101 to tell us: What kind
+          of this food in image? And use LinearSVC model to tell us: What knid
+          of emotions in this description? In this way, we can transform
+          low-quality 2D data into high-quality 4D data sets, paving the way for
+          us to use the data for new operations in the future.
         </p>
         <p style={{ textAlign: "center" }}>
           <br />
@@ -49,7 +65,10 @@ export default class System extends React.Component {
         </p>
         <br />
         <p className="subtitle">1.2 Design A Better System</p>
-        <p className="text">A better system may looks like this:</p>
+        <p className="text">
+          A complete machine learning system has the following structure, and
+          that is also a better for raw data training.
+        </p>
         <p style={{ textAlign: "center" }}>
           <br />
           <img
@@ -63,7 +82,10 @@ export default class System extends React.Component {
           cleaning part is the most important, it determines the accuracy of the
           algorithm to identify the picture. After we get a clean, hight quality
           dataset, then we can use the cleaned and processed data for the next
-          classification model training.
+          classification model training. The final output test results can be
+          re-entered as a feedback data, so that we can collect high-quality
+          data while improving the recognition accuracy of our deep learning
+          model.
         </p>
         <p className="text">
           This is a{" "}
@@ -71,12 +93,14 @@ export default class System extends React.Component {
           involves three parts:{" "}
           <strong>data acquisition, cleaning and final classification</strong>.
           At the same time, the deep learning part can be further divided into
-          computer vision recognition food type part, natural language
-          processing part and final classifier part. So this system is
-          definitely not short-term achievable, but some design ideas about this
-          system will be documented in this document.
+          recognition food images part, natural language processing part and
+          final classifier part. So this system is definitely not short-term
+          achievable. I will try to demonstrate the entire architecture with
+          demos that I can make, but I can't make sure that the entire system can
+          be completed and put into production. This is just a structural
+          assumption, and it needs to be discussed and implemented with
+          professional deep learning engineers and architects.
         </p>
-
         <br />
         <p className="subtitle">1.3 Website Demo</p>
         <p className="text">

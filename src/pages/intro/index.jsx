@@ -34,10 +34,22 @@ export default class Intro extends React.Component {
         <br />
         <p className="subtitle">1.2 Project Tasks</p>
         <p className="text">
+          According our requiremnets, we have several parts (small tasks) of
+          this whole big project:
+        </p>
+        <p className="text">
           &nbsp; * Data Collector (Spider)
           <br /> &nbsp; * Food Classification (CV)
           <br />
           &nbsp; * Text Sentiment Analysis (NLP)
+          <br />
+          &nbsp; * New Trainning Algorithms
+        </p>
+        <p className="text">
+          We use data collector to collect raw data from social medias. Use food
+          classification and text sentiment analysis to help us clean data, and
+          train a better machine learning model using new algorithms and better
+          designs.
         </p>
         <br />
         <p className="title">2. Project Dataset</p>
@@ -49,29 +61,30 @@ export default class Intro extends React.Component {
               src="https://i.loli.net/2019/06/13/5d020d0a5383d93882.png"
             />
           </p>
-          This is not a single deep learning model for a single task, we have
-          two kinds of data, food image and food comments. There is a
-          correspondence between food pictures and food reviews. Something like
-          picture above. The dirty data comes from Instagram, we get both images
-          and comments. So we have a data structure like:
+          For the posts in the social medias like Instagram, we have two kinds
+          of data, food image and food comments. There is a correspondence
+          between food pictures and food reviews. Something like picture above.
+          In the dirty data from Instagram, we can get both images and comments.
+          So we may have a data structure like:
         </p>
         <p className="code-block">Data = (Images ... , Comment ...)</p>
 
         <p className="text">
           But this is the ideal situation. Posts posted by users on social media
-          are often not all photos of food, so we still need to clean the data.
+          are often not all photos of food, so we still need to clean the data
+          in the next step to get a better result.
         </p>
         <br />
         <p className="subtitle">2.2 Computer Vision Data</p>
         <p className="text">
-          Our data comes from Instagram, Instagram has an API for data getting,
-          but we need to get specific tag like 'food'. But there may be many
-          types of food, we cannot control this, for deep learning
-          classification tasks, we need specific food tags. So I used a specific
-          food classification dataset for initial model training. The initial
-          dataset is 'food-101' which means there are 101 kinds of food in this
-          dataset, and the last model can recognize over 100 kinds of food. Full
-          food list can be found here:
+          Our data comes from Instagram, which has an API for data getting, but
+          if we need to get specific tag like 'food', there may be many types of
+          food, we cannot control this (screen out specific foods). As for deep
+          learning classification tasks, we need specific food tags. So I used a
+          specific food classification dataset for initial model training. The
+          initial dataset is 'food-101' which means there are 101 kinds of food
+          in this dataset, and the last model can recognize over 100 kinds of
+          food. Full food list can be found here:
           <p style={{ textAlign: "center" }}>
             <br />
             <img
@@ -80,12 +93,22 @@ export default class Intro extends React.Component {
             />
           </p>
         </p>
+        <p className="text">
+          With these initial data, we can train a basic deep learning model and
+          use it for our data washing in the next step (as be a very important
+          part of the whole system).
+        </p>
         <br />
         <p className="subtitle">2.3 Text Sentiment Analysis Data</p>
         <p className="text">
-          For text sentiment analysis task, we used a very simple modle:
-          LinearSVC, which comes from the sklearn. And text data from
-          epinions.com. Text sentiments can be divide into three parts:
+          For text sentiment analysis task, we used a very simple model:
+          <a ref="https://scikit-learn.org/stable/modules/generated/sklearn.svm.LinearSVC.html">
+            {" "}
+            LinearSVC
+          </a>
+          , which comes from the sklearn. Our text data comnes from{" "}
+          <a ref="http://epinions.com/?sb=1"> epinions.com</a>. Text sentiment
+          results can be divided into three parts (with different emotions):
         </p>
         <p className="text">
           &nbsp; * Pos (Positive)
@@ -101,11 +124,16 @@ export default class Intro extends React.Component {
         <p className="text">
           The model is based on <strong>LinearSVC</strong> classifier and is
           able to distinguish between positive and negative sentences with best
-          CV score = 0.801013024602. If a food comment is Pos, then we think the
-          food quality is good, delicious, the same as Neg and Nor.
+          <strong> CV score = 0.801013024602</strong>. If a food comment is Pos,
+          then we think the food quality is good, delicious, the same as Neg and
+          Nor.
         </p>
-
+        <br />
         <p className="title">3. Food Recognition Algorithms</p>
+        <p className="text">
+          For trainning the food-101 model, we have done some basic experiments,
+          and read some related papers, here are the references and documents.
+        </p>
         <p className="subtitle">3.1 Reference</p>
         <p className="text">
           <a href="https://www.vision.ee.ethz.ch/datasets_extra/food-101/static/bossard_eccv14_food-101.pdf">
@@ -149,14 +177,30 @@ export default class Intro extends React.Component {
           class available for supervised training.
         </p>
         <br />
-        <p className="subtitle">3.3 Results</p>
+        <p className="subtitle">3.3 Test and Trainning</p>
+        <p className="text">
+          We will be retraining a Google InceptionV3 model, pretrained on
+          ImageNet. The neural network architecture is:
+        </p>
+        <p style={{ textAlign: "center" }}>
+          <img
+            src="https://i.loli.net/2019/06/13/5d024a54d8e2f90521.png"
+            style={{ width: "80%" }}
+          />
+        </p>
+        <p className="text">
+          I used two GXT 1080Ti(s) to train this model, and each epoch of training
+          time takes about 20 minutes.
+        </p>
+        <br />
+        <p className="subtitle">3.4 Results</p>
         <p className="text">
           After fine-tuning a pre-trained Google
           <a ref="https://keras.io/applications/#inceptionv3"> InceptionV3 </a>
           model, I was able to achieve about <strong>82.03%</strong> Top-1
           Accuracy on the test set using a single crop per item. Using 10 crops
-          per example and taking the most frequent predicted class(es), I was
-          able to achieve
+          per example and taking the most frequent predicted classes, I was able
+          to achieve
           <strong> 86.97% </strong>Top-1 Accuracy and <strong>97.42%</strong>{" "}
           Top-5 Accuracy.
         </p>
