@@ -1,9 +1,5 @@
 @import "~antd/dist/antd.css";
 
-.App {
-  text-align: center;
-}
-
 canvas {
   display: inline-block;
   border: 1px solid gray;
@@ -35,17 +31,9 @@ canvas {
   float: left;
 }
 
-.divider {
-  margin-top: 5px;
-}
-
 .row-body {
   height: 100%;
   min-height: 600px;
-}
-
-.divider-vertical {
-  height: 100%;
 }
 
 .loading {
