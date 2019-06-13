@@ -97,10 +97,10 @@ ReactDOM.render(
             overflow: "initial"
           }}
         >
-          <Route exact path="/about" component={About} />
-          <Route exact path="/demo2" component={Demo2} />
-          <Route exact path="/demo1" component={Demo1} />
-          <Route exact path="/system" component={System} />
+          <Route path="/about" component={About} />
+          <Route path="/demo2" component={Demo2} />
+          <Route path="/demo1" component={Demo1} />
+          <Route path="/system" component={System} />
           <Route exact path="/intro" component={Intro} />
         </Content>
         <Footer style={{ textAlign: "center" }}>
