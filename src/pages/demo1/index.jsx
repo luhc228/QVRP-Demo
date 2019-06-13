@@ -11,13 +11,13 @@ import { food101topK } from "../../utils/utils";
 
 const loadImage = window.loadImage;
 
-const mapProb = prob => {
-  if (prob * 100 < 2) {
-    return "2%";
-  } else {
-    return prob * 100 + "%";
-  }
-};
+// const mapProb = prob => {
+//   if (prob * 100 < 2) {
+//     return "2%";
+//   } else {
+//     return prob * 100 + "%";
+//   }
+// };
 
 class Demo1 extends Component {
   constructor() {
