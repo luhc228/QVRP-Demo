@@ -42,6 +42,7 @@ export default class System extends React.Component {
         <p style={{ textAlign: "center" }}>
           <br />
           <img
+            alt="logo"
             src="https://i.loli.net/2019/06/13/5d0223af6dade74774.png"
             style={{ width: "90%" }}
           />
@@ -72,6 +73,7 @@ export default class System extends React.Component {
         <p style={{ textAlign: "center" }}>
           <br />
           <img
+            alt=""
             src="https://i.loli.net/2019/06/13/5d02267fdb55d95089.png"
             style={{ width: "90%" }}
           />
@@ -121,6 +123,7 @@ export default class System extends React.Component {
         <p style={{ textAlign: "center" }}>
           <br />
           <img
+            alt=""
             src="https://i.loli.net/2019/06/13/5d0228133727d72543.png"
             style={{ width: "90%" }}
           />
